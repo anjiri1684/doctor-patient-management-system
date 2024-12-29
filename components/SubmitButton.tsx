@@ -1,24 +1,36 @@
-import React from 'react'
-import { Button } from './ui/button'
-import Image from 'next/image'
+import Image from "next/image";
+
+import { Button } from "./ui/button";
 
 interface ButtonProps {
-  isLoading: boolean
-  className?: string
-  children: React.ReactNode
+  isLoading: boolean;
+  className?: string;
+  children: React.ReactNode;
 }
 
-function SubmitButton({isLoading, className, children}: ButtonProps) {
+const SubmitButton = ({ isLoading, className, children }: ButtonProps) => {
   return (
-    <Button type='button' disabled={isLoading} className={className ?? 'shad-primary-btn w-full'}>
+    <Button
+      type="submit"
+      disabled={isLoading}
+      className={className ?? "shad-primary-btn w-full mt-5 mb-3"}
+    >
       {isLoading ? (
-        <div className='flex items-center gap-4'>
-          <Image src="/assets/icons/loader.svg" alt='loader' width={24} height={24} className='animatine-spin' />
-          <span>Loading...</span>
+        <div className="flex items-center gap-4">
+          <Image
+            src="/assets/icons/loader.svg"
+            alt="loader"
+            width={24}
+            height={24}
+            className="animate-spin"
+          />
+          Loading...
         </div>
-      ): children}
+      ) : (
+        children
+      )}
     </Button>
-  )
-}
+  );
+};
 
-export default SubmitButton
+export default SubmitButton;

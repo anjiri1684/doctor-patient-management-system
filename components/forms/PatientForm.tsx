@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client"
  
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -12,6 +11,7 @@ import SubmitButton from "../SubmitButton"
 import { useState } from "react"
 import { UserFormValidation } from "@/lib/validation"
 import { useRouter } from "next/navigation"
+import { createUser } from "@/lib/actions/patient.actions"
 
 export enum FormFieldType {
   INPUT = 'input',
@@ -55,26 +55,33 @@ const PatientForm = () => {
     },
   })
 
-  async function onSubmit({name, email,phone}: z.infer<typeof UserFormValidation>) {
-   
-    setIsloading(true)
-
+  async function onSubmit({ name, email, phone }: z.infer<typeof UserFormValidation>) {
+    console.log("Form submission triggered with:", { name, email, phone });
+    setIsloading(true);
+  
     try {
-      const userdata = {
-        name,
-        email,
-        phone,
-      } 
-      // const user = await createUser(userdata)
-
-      // if (user) {
-      //   router.push(`/patients/${user.$id}/register`)
-      // }
+      const userdata = { name, email, phone };
+      console.log("Sending data to createUser:", userdata);
+  
+      const user = await createUser(userdata);
       
+      console.log("User created or fetched:", user);  
+      if (user && user.$id) {
+        router.push(`/patients/${user.$id}/register`);
+      } else {
+        console.error("User object is invalid:", user);
+      }
+
     } catch (error) {
-      console.log(error)
+      console.error("Submission error:", error);
+    } finally {
+      setIsloading(false);
+      console.log("Loading state reset.");
     }
   }
+  
+  
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 flex-1">
@@ -107,7 +114,7 @@ const PatientForm = () => {
           label="Phone Number"
           placeholder="254 700000000"
         />
-        <SubmitButton isLoading={isLoading}>Get Started</SubmitButton>
+        <SubmitButton  isLoading={isLoading}>Get Started</SubmitButton>
       </form>
     </Form>
 )
